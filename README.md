@@ -1,81 +1,137 @@
-# ELK Stack for macOS Cybersecurity Telemetry
+# ELK Stack for Cybersecurity Education
 
-This project provides a complete ELK (Elasticsearch, Logstash, Kibana) stack using Docker Compose. It is configured to ingest and visualize cybersecurity telemetry data from a macOS host via syslog.
+A complete ELK (Elasticsearch, Logstash, Kibana) stack using Docker Compose, designed for cybersecurity monitoring and telemetry collection. This project supports both macOS and Windows environments and provides practical hands-on experience with security monitoring.
 
-This is a great way to get a development environment running quickly.
+## 📥 Getting Started
 
-## Prerequisites
+### 1. Download the Project
 
-- [Docker](https://docs.docker.com/get-docker/) must be installed and running on your system.
-- [Docker Compose](https://docs.docker.com/compose/install/) must be installed. (It is included with Docker Desktop).
+**Option A: Clone with Git (Recommended)**
+```bash
+git clone <repository-url>
+cd ELK-Docker
+```
 
-## 1. Start the ELK Stack
+**Option B: Download ZIP**
+1. Click the green "Code" button on GitHub
+2. Select "Download ZIP"
+3. Extract the ZIP file
+4. Open terminal/command prompt and navigate to the extracted folder:
+   ```bash
+   cd path/to/extracted/ELK-Docker
+   ```
 
-To start the entire ELK stack, run the following command from your project directory:
+### 2. Prerequisites
 
-```sh
+- [Docker Desktop](https://docs.docker.com/get-docker/) installed and running
+- Basic familiarity with command line tools
+
+## 🚀 Quick Start
+
+### 3. Start the ELK Stack
+
+```bash
 docker compose up -d
 ```
 
-### 2. Run the script
+### 4. Verify the Stack is Running
 
-```sh
-./run-elasticsearch.sh
-```
-
-This will pull the Elasticsearch image (if you don't have it) and start a container named `es01` in detached mode.
-
-## Verifying the Setup
-
-Once the container is running, you can verify that Elasticsearch is up by sending a request to its REST API. It might take a minute for the service to fully initialize.
-
-```sh
+Check Elasticsearch:
+```bash
 curl -X GET "localhost:9200"
 ```
 
-You should see a JSON response similar to this, confirming that your node is running:
+Access Kibana: http://localhost:5601
 
-```json
-{
-  "name": "es01",
-  "cluster_name": "docker-cluster",
-  "cluster_uuid": "...",
-  "version": {
-    "number": "9.1.3",
-    "build_flavor": "default",
-    "build_type": "docker",
-    "build_hash": "...",
-    "build_date": "...",
-    "build_snapshot": false,
-    "lucene_version": "10.2.2",
-    "minimum_wire_compatibility_version": "8.19.0",
-    "minimum_index_compatibility_version": "8.0.0"
-  },
-  "tagline": "You Know, for Search"
-}
+### 5. Start Collecting Security Telemetry
+
+**For macOS:**
+```bash
+# Basic security metrics
+./scripts/telemetry/cyber_security_mvp.sh
+
+# Enhanced syslog collection
+./scripts/telemetry/syslog_mac.sh
 ```
 
-## Managing the Container
+**For Windows:**
+```powershell
+# Run in PowerShell as Administrator
+.\scripts\telemetry\windows_telemetry.ps1
+```
 
-- **To see the logs:**
+## 📊 What Gets Monitored
 
-  ```sh
-  docker logs -f es01
-  ```
+The telemetry scripts collect key cybersecurity indicators:
 
-- **To stop the container:**
+- **Authentication Events**: Failed login attempts
+- **Network Activity**: Active TCP connections and processes
+- **File System Changes**: New files in temporary directories
+- **System Performance**: CPU/load metrics (potential DoS indicators)
+- **Process Monitoring**: Network-connected processes
 
-  ```sh
-  docker stop es01
-  ```
+## 🔧 Stack Components
 
-- **To start the container again:**
+| Service | Port | Purpose |
+|---------|------|---------|
+| Elasticsearch | 9200 | Data storage and search |
+| Kibana | 5601 | Visualization and dashboards |
+| Logstash | 514 | Syslog ingestion (TCP/UDP) |
 
-  ```sh
-  docker start es01
-  ```
+## 📁 Project Structure
 
-- **To remove the container (this will delete any data inside it):**
-  ```sh
-  docker rm es01
-  ```
+```
+├── docker-compose.yml          # ELK stack configuration
+├── logstash/
+│   └── pipeline/
+│       └── logstash.conf       # Log processing configuration
+├── scripts/
+│   ├── telemetry/
+│   │   ├── cyber_security_mvp.sh    # macOS security telemetry
+│   │   ├── syslog_mac.sh           # macOS syslog collection
+│   │   └── windows_telemetry.ps1   # Windows security telemetry
+│   └── setup/
+│       ├── run-elasticsearch.sh    # Standalone Elasticsearch setup
+│       └── syslog_alert.sh         # Alert configuration helper
+└── README.md                   # This file
+```
+
+## 🛠️ Managing the Stack
+
+**View logs:**
+```bash
+docker logs -f es01           # Elasticsearch
+docker logs -f kibana01       # Kibana
+docker logs -f logstash01     # Logstash
+```
+
+**Stop/Start services:**
+```bash
+docker compose down           # Stop all services
+docker compose up -d          # Start all services
+docker compose restart       # Restart all services
+```
+
+**Clean up (removes all data):**
+```bash
+docker compose down -v
+```
+
+## 🎯 Learning Objectives
+
+This project helps you learn:
+- Security Information and Event Management (SIEM) concepts
+- Real-time security telemetry collection
+- Docker-based infrastructure deployment
+- Log parsing and data visualization
+- Security metric analysis and monitoring
+
+## 🔗 Resources
+
+- [Cyber Desserts Blog Post](https://cyberdesserts.com/lab-building-a-cybersecurity-monitoring-stack-with-elk)
+- [ELK Stack Documentation](https://www.elastic.co/guide/index.html)
+- [Docker Compose Reference](https://docs.docker.com/compose/)
+
+---
+
+**Note**: This is a development/education environment. For production use, enable authentication, TLS, and proper security hardening.
