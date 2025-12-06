@@ -2,9 +2,15 @@
 
 # Cybersecurity MVP Telemetry Script
 # Focuses on key security indicators for Mac systems
+#
+# Usage: ./cyber_security_mvp.sh [HOST] [PORT]
+# Examples:
+#   ./cyber_security_mvp.sh                    # Uses localhost:514 (default)
+#   ./cyber_security_mvp.sh 192.168.1.100 514  # Custom host and port
 
-HOST="localhost"
-PORT="514"
+# Accept optional command-line arguments, fallback to defaults
+HOST="${1:-localhost}"
+PORT="${2:-514}"
 HOSTNAME=$(hostname -s)
 
 function send_syslog() {
